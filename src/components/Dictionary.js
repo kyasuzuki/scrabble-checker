@@ -10,7 +10,6 @@ import {
   FormField,
   Keyboard,
   ResponsiveContext,
-  Text
 } from "grommet";
 
 import blush from "../avatar/Boy-blush.svg";
@@ -48,7 +47,7 @@ const KEYS = {
   88: "X",
   89: "Y",
   98: "Z",
-  8: "delete"
+  8: "delete",
 };
 
 const validArray = [
@@ -56,22 +55,24 @@ const validArray = [
   "ay okay okay",
   "okie smartie pants",
   "i'll give it to you",
-  "yipee"
+  "yipee",
 ];
 const invalidArray = [
   "nah uh honey",
   "sucks to suck",
   "Ha try again buddy",
   "not today boi",
-  "bruh you dumb"
+  "bruh you dumb",
 ];
 
 const validMax = [happy, blush, tongue];
 const invalidMax = [sad, mad, confused];
 
-const CORS = "https://cors-anywhere.herokuapp.com/";
+//https: // const CORS = "https://cors-anywhere.herokuapp.com/";
+const CORS = "https://serene-scrubland-00249.herokuapp.com/";
 const baseURL = "http://www.wordgamedictionary.com/api/v1/references/scrabble/";
-const key = "7.304453775081076e29";
+// const key = "7.304453775081076e29";
+const key = "1.1356492099878718e30";
 
 class Dictionary extends React.Component {
   constructor(props) {
@@ -82,7 +83,7 @@ class Dictionary extends React.Component {
       isValidScrabble: "",
       response: "",
       max: smirk,
-      responseColor: "status-ok"
+      responseColor: "status-ok",
       //max: "../avatar/max1.png"
     };
 
@@ -92,7 +93,6 @@ class Dictionary extends React.Component {
   }
 
   handleChange(event) {
-    // console.log(isValidScrabbleLetter);
     const letters = /^[A-Za-z]+$/;
     if (event.target.value.match(letters)) {
       this.setState({ wordToCheck: event.target.value });
@@ -100,11 +100,9 @@ class Dictionary extends React.Component {
       this.setState({
         wordToCheck: event.target.value === "" ? "" : this.state.wordToCheck,
         response: "",
-        max: smirk
+        max: smirk,
       });
     }
-    console.log(this.state.wordToCheck);
-    //console.log(this.state.wordToCheck);
   }
 
   handleSubmit(event) {
@@ -118,7 +116,7 @@ class Dictionary extends React.Component {
       wordToCheck: "",
       lettersArray: [],
       response: "",
-      max: smirk
+      max: smirk,
     });
   }
 
@@ -126,7 +124,7 @@ class Dictionary extends React.Component {
     return CORS + baseURL + wordToCheck + "?key=" + key;
   }
 
-  callAPI = async wordToCheck => {
+  callAPI = async (wordToCheck) => {
     const url = this.generateURL(wordToCheck);
     try {
       const result = await fetch(url);
@@ -138,26 +136,26 @@ class Dictionary extends React.Component {
       const checkValid = result_XML.getElementsByTagName("scrabble")[0]
         .textContent;
 
+      console.log("resultXML", result_XML, "checkValid", checkValid);
       this.setState({
-        isValidScrabble: checkValid == 1 ? true : false,
-        responseColor: checkValid == 1 ? "status-ok" : "status-critical",
+        isValidScrabble: checkValid === "1" ? true : false,
+        responseColor: checkValid === "1" ? "status-ok" : "status-critical",
         response:
-          checkValid == 1
+          checkValid === "1"
             ? validArray[Math.floor(Math.random() * validArray.length)]
             : invalidArray[Math.floor(Math.random() * invalidArray.length)],
         max:
-          checkValid == 1
+          checkValid === "1"
             ? validMax[Math.floor(Math.random() * validMax.length)]
-            : invalidMax[Math.floor(Math.random() * invalidMax.length)]
+            : invalidMax[Math.floor(Math.random() * invalidMax.length)],
       });
-      //   console.log("hi");
-      //   console.log(this.state.max);
     } catch (e) {
+      console.log("we are in errrrrrr");
       console.log(e);
     }
   };
 
-  deleteLetter = event => {
+  deleteLetter = (event) => {
     const array = [...this.state.lettersArray];
     const index = array.length - 1;
     if (index !== -1) {
@@ -166,7 +164,7 @@ class Dictionary extends React.Component {
     }
   };
 
-  findLetter = event => {
+  findLetter = (event) => {
     const letter = event.keyCode;
     let isLetter;
     console.log(letter);
@@ -177,14 +175,11 @@ class Dictionary extends React.Component {
         isLetter = true;
         const fileName = KEYS[letter] + ".png";
         this.setState({
-          lettersArray: [...this.state.lettersArray, fileName]
+          lettersArray: [...this.state.lettersArray, fileName],
         });
         console.log(this.state.lettersArray);
       } else {
         isLetter = false;
-        // this.setState({
-        //   lettersArray: []
-        // });
         console.log(event);
       }
       console.log(isLetter);
@@ -196,14 +191,13 @@ class Dictionary extends React.Component {
     const {
       wordToCheck,
       lettersArray,
-      isValidScrabble,
       response,
       responseColor,
-      max
+      max,
     } = this.state;
     return (
       <ResponsiveContext.Consumer>
-        {size => (
+        {(size) => (
           <Keyboard onKeyDown={this.findLetter}>
             <Box flex direction={size === "small" ? "column" : "row"}>
               <Box
@@ -220,7 +214,7 @@ class Dictionary extends React.Component {
                   </Heading>
                 </Box>
                 <Box flex gap="small" direction="row">
-                  {lettersArray.map(letter => (
+                  {lettersArray.map((letter) => (
                     <Box width="xsmall" height="xsmall">
                       <Image
                         fit="contain"
@@ -272,6 +266,3 @@ class Dictionary extends React.Component {
 }
 
 export default Dictionary;
-
-/* <Text>{`${isValidScrabble}`}</Text> */
-/* <img src={max} /> */
